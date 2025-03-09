@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "sky.map")
+@ConfigurationProperties(prefix = "jlumart.map")
 @Data
 public class BaiduMapProperties {
     private String ak;
