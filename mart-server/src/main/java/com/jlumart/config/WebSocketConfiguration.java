@@ -11,9 +11,9 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 //@ConditionalOnNotWebApplication
 public class WebSocketConfiguration {
 
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
-    }
+//    @Bean
+//    public ServerEndpointExporter serverEndpointExporter() {
+//        return new ServerEndpointExporter();
+//    }
 
 }

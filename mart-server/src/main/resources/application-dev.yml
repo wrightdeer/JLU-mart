@@ -1,8 +1,8 @@
 jlumart:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    host: localhost
-    port: 3306
-    database: sky_take_out
+    driver-class-name: oracle.jdbc.OracleDriver
+    host: 192.168.80.10
+    port: 1521
+    database: orcl
     username: root
     password: 123456
