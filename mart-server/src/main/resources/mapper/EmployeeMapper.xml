@@ -4,5 +4,51 @@
 <mapper namespace="com.jlumart.mapper.EmployeeMapper">
 
 
+    <update id="update" parameterType="Employee">
+        UPDATE employees
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
 
+        </set>
+        where id = #{id}
+    </update>
+    <select id="page" resultType="com.jlumart.entity.Employee">
+        select * from employees
+        <where>
+            <if test="name != null and name != ''">
+                and name like '%' || #{name} || '%'
+            </if>
+
+        </where>
+        order by create_time desc
+    </select>
 </mapper>

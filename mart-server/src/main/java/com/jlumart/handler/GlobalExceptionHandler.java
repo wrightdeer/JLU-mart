@@ -18,14 +18,26 @@ public class GlobalExceptionHandler {
 
     /**
      * 捕获业务异常
+     *
      * @param ex
      * @return
      */
     @ExceptionHandler
-    public Result exceptionHandler(BaseException ex){
+    public Result exceptionHandler(BaseException ex) {
         log.error("异常信息：{}", ex.getMessage());
         return Result.error(ex.getMessage());
     }
 
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public Result handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        log.error("数据库唯一约束冲突异常：", ex);
+
+        // 判断是否是 username 字段的唯一性冲突
+        if (ex.getMessage().contains("JLUMARTADMIN.USERNAME_UK")) {
+            return Result.error("用户名已存在");
+        }
+
+        return Result.error(MessageConstant.UNKNOWN_ERROR);
+    }
 
 }

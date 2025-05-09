@@ -22,7 +22,7 @@ public class JwtRedisUtil {
      * @param userId
      * @param jwt
      */
-    public void saveJwtToRedis(Long userId, String jwt, long timeout) {
+    public void saveJwtToRedis(String userId, String jwt, long timeout) {
         String jwtKey = JWT_KEY_PREFIX + jwt;
         String userSetKey = USER_SET_KEY_PREFIX + userId;
 

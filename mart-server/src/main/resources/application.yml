@@ -29,10 +29,14 @@ mybatis:
 logging:
   level:
     com:
-      sky:
+      jlumart:
         mapper: debug
         service: info
         controller: info
+      org:
+        springframework:
+          data:
+            redis: DEBUG
 
 jlumart:
   jwt:

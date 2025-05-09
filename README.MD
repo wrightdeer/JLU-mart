@@ -14,4 +14,6 @@
 - 我的苍穹外卖项目地址：https://github.com/wrightdeer/sky-take-out.git
 - 程序不允许出现硬编码字符串，所有固定内容的字符串设置成常量，放在mart-common/src/main/java/com/jlumart/constant
 - **_确认过的事项请移动到已完成事项列表中，明天晚上如果我还看见这些事项全部未完成，我就要发火了！！！！_**
+
+- 密码长度改为100
 ### 已确认
