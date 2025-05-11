@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jlumart.mapper.ProductMapper">
+<!--    库存值为增量-->
+    <update id="update">
+        update products
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="stock != null">
+                stock = stock + #{stock},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="page" resultType="com.jlumart.vo.ProductPageVO" >
+        select
+            p.id,
+            p.name,
+            p.image,
+            p.price,
+            p.stock,
+            p.update_time,
+            p.status,
+            c.name as category_name,
+            pc.name as parent_category_name
+            from
+                products p
+                left join categories c on p.category_id = c.id
+                left join categories pc on c.parent_id = pc.id
+        <where>
+            <if test="name != null and name != ''">
+                and p.name like '%' || #{name} || '%'
+            </if>
+            <if test="categoryId != null">
+                and p.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and p.status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="getById" resultType="com.jlumart.vo.ProductVO">
+        select
+            p.name as name,
+            p.description as description,
+            p.image as image,
+            p.price as price,
+            c.id as categoryId,
+            c.parent_id as parentCategoryId
+        from products p
+        left join categories c on p.category_id = c.id
+        where p.id = #{id}
+    </select>
+</mapper>

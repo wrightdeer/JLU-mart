@@ -20,6 +20,8 @@ import com.jlumart.service.EmployeeService;
 import com.jlumart.utils.JwtUtil;
 import com.jlumart.vo.EmployeeInfoVO;
 import com.jlumart.vo.EmployeeLoginVO;
+import com.jlumart.vo.EmployeePageVO;
+import com.jlumart.vo.EmployeeVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,7 +84,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.update(employee);
 
         // 先清除旧token
-        String userId = "admin:" + BaseContext.getCurrentId();
+        String userId = "ADMIN:" + BaseContext.getCurrentId();
         jwtRedisUtil.removeJwtFromRedis(userId);
         // 将本次的token存入redis
         String jwt = BaseContext.getCurrentJwt();
@@ -91,14 +93,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public PageResult page(EmployeePageDTO employeePageDTO) {
         PageHelper.startPage(employeePageDTO.getPage(), employeePageDTO.getPageSize());
-        Page<Employee> page = employeeMapper.page(employeePageDTO);
+        Page<EmployeePageVO> page = employeeMapper.page(employeePageDTO);
         PageResult pageResult = new PageResult(page.getTotal(), page.getResult());
         return pageResult;
     }
 
-    public Employee getById(Long id) {
+    public EmployeeVO getById(Long id) {
         if (id != null) {
-            return employeeMapper.getById(id);
+            Employee employee = employeeMapper.getById(id);
+            return EmployeeVO.builder()
+                    .avatar(employee.getAvatar())
+                    .username(employee.getUsername())
+                    .name(employee.getName())
+                    .phone(employee.getPhone())
+                    .sex(employee.getSex())
+                    .email(employee.getEmail())
+                    .build();
         }
         return null;
     }
@@ -112,22 +122,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.update(employee);
     }
 
-    @Override
     public void delete(Long id) {
         Long currentId = BaseContext.getCurrentId();
         if (currentId != 1) {
             throw new AuthorizationException();
         }
         if (id == 1) {
-            throw new ForbiddenOperationException("最高管理员无法删除");
+            throw new ForbiddenOperationException("最高管理员无法被删除");
         }
         employeeMapper.delete(id);
+        String userId = "ADMIN:" + id;
+        jwtRedisUtil.removeJwtFromRedis(userId);
     }
 
     public void editStatus(Long id, Integer status) {
         Long currentId = BaseContext.getCurrentId();
         if (id == 1) {
-            throw new ForbiddenOperationException("最高管理员状态无法修改");
+            throw new ForbiddenOperationException("最高管理员状态无法被修改");
         }
         if (Objects.equals(currentId, id)) {
             throw new IllegalOperationException("无法修改自己的状态");
@@ -139,8 +150,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(currentId);
         employeeMapper.update(employee);
 
-        if (status == StatusConstant.DISABLE) {
-            String userId = "admin:" + id;
+        if (Objects.equals(status, StatusConstant.DISABLE)) {
+            String userId = "ADMIN:" + id;
             jwtRedisUtil.removeJwtFromRedis(userId);
         }
     }
@@ -167,7 +178,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
                 claims);
-        String userId = "admin:" + employee.getId();
+        String userId = "ADMIN:" + employee.getId();
         jwtRedisUtil.saveJwtToRedis(userId, token, jwtProperties.getAdminTtl() / 1000);
 
         return EmployeeLoginVO.builder()

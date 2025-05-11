@@ -7,6 +7,7 @@ import com.jlumart.mapper.EmployeeMapper;
 import com.jlumart.result.PageResult;
 import com.jlumart.vo.EmployeeInfoVO;
 import com.jlumart.vo.EmployeeLoginVO;
+import com.jlumart.vo.EmployeeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.jlumart.entity.Employee;
@@ -30,7 +31,7 @@ public interface EmployeeService {
 
     PageResult page(EmployeePageDTO employeePageDTO);
 
-    Employee getById(Long id);
+    EmployeeVO getById(Long id);
 
     void editEmployee(EmployeeDTO employeeDTO);
 

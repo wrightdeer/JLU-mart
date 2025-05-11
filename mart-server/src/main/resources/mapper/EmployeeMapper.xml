@@ -41,7 +41,7 @@
         </set>
         where id = #{id}
     </update>
-    <select id="page" resultType="com.jlumart.entity.Employee">
+    <select id="page" resultType="com.jlumart.vo.EmployeePageVO">
         select * from employees
         <where>
             <if test="name != null and name != ''">

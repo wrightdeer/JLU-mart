@@ -2,6 +2,7 @@ package com.jlumart.mapper;
 import com.github.pagehelper.Page;
 import com.jlumart.dto.EmployeePageDTO;
 import com.jlumart.dto.LoginDTO;
+import com.jlumart.vo.EmployeePageVO;
 import org.apache.ibatis.annotations.*;
 import com.jlumart.entity.Employee;
 
@@ -25,7 +26,7 @@ public interface EmployeeMapper {
 
     void update(Employee employee);
 
-    Page<Employee> page(EmployeePageDTO employeePageDTO);
+    Page<EmployeePageVO> page(EmployeePageDTO employeePageDTO);
 
     @Delete("DELETE FROM EMPLOYEES WHERE id = #{id}")
     void delete(Long id);

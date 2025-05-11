@@ -4,7 +4,7 @@ import com.jlumart.constant.MessageConstant;
 
 public class ForbiddenOperationException extends BaseException {
     public ForbiddenOperationException() {
-        super(MessageConstant.FORBIDDEN_OPERATION);
+        super("权限异常");
     }
     public ForbiddenOperationException(String message) {
         super(message);

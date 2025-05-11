@@ -56,9 +56,9 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         try {
             log.info("jwt校验:{}", token);
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
-            Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
+            Long Id = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
             // 在redis中进行校验
-            String userId = "admin:" + empId;
+            String userId = "ADMIN:" + Id;
             if (!jwtRedisUtil.checkJwtInRedis(userId, token)) {
                 response.setStatus(401);
                 return false;
@@ -77,8 +77,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
                 BaseContext.setCurrentJwt(token);
             }
 
-            log.info("当前员工id：", empId);
-            BaseContext.setCurrentId(empId);
+            log.info("当前员工id：", Id);
+            BaseContext.setCurrentId(Id);
             //3、通过，放行
             return true;
         } catch (Exception ex) {

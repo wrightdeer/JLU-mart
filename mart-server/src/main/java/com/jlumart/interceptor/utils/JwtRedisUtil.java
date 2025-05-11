@@ -15,22 +15,17 @@ import java.util.concurrent.TimeUnit;
 public class JwtRedisUtil {
     @Autowired
     private RedisTemplate redisTemplate;
-    private static final String JWT_KEY_PREFIX = "jwt:";
-    private static final String USER_SET_KEY_PREFIX = "user:";
+    private static final String JWT_KEY_PREFIX = "JWT:";
     /**
      * 将jwt令牌存储到redis中
      * @param userId
      * @param jwt
      */
     public void saveJwtToRedis(String userId, String jwt, long timeout) {
-        String jwtKey = JWT_KEY_PREFIX + jwt;
-        String userSetKey = USER_SET_KEY_PREFIX + userId;
+        String jwtKey = JWT_KEY_PREFIX + userId+ ":" + jwt;
 
         ValueOperations valueOperations = redisTemplate.opsForValue();
         valueOperations.set(jwtKey, "", timeout, TimeUnit.SECONDS);
-
-        SetOperations setOperations = redisTemplate.opsForSet();
-        setOperations.add(userSetKey, jwt);
     }
 
     /**
@@ -38,13 +33,9 @@ public class JwtRedisUtil {
      * @param userId
      */
     public void removeJwtFromRedis(String userId) {
-        String userSetKey = USER_SET_KEY_PREFIX + userId;
-        SetOperations setOperations = redisTemplate.opsForSet();
-        Set<String> members = setOperations.members(userSetKey);
-        for (String member : members) {
-            redisTemplate.delete(JWT_KEY_PREFIX + member);
-        }
-        redisTemplate.delete(userSetKey);
+        String jwtKeyPrefix = JWT_KEY_PREFIX + userId + ":";
+        Set<String> keys = redisTemplate.keys(jwtKeyPrefix + "*");
+        redisTemplate.delete(keys);
     }
 
     /**
@@ -53,10 +44,8 @@ public class JwtRedisUtil {
      * @param jwt
      */
     public void removeJwtFromRedis(String userId, String jwt) {
-        String userSetKey = USER_SET_KEY_PREFIX + userId;
-        SetOperations setOperations = redisTemplate.opsForSet();
-        setOperations.remove(userSetKey, jwt);
-        redisTemplate.delete(JWT_KEY_PREFIX + jwt);
+        String jwtKey = JWT_KEY_PREFIX + userId+ ":" + jwt;
+        redisTemplate.delete(jwtKey);
     }
 
     /**
@@ -65,9 +54,7 @@ public class JwtRedisUtil {
      * @param jwt
      */
     public boolean checkJwtInRedis(String userId, String jwt) {
-        String userSetKey = USER_SET_KEY_PREFIX + userId;
-        SetOperations setOperations = redisTemplate.opsForSet();
-        Set<String> members = setOperations.members(userSetKey);
-        return members != null && members.contains(jwt);
+        String jwtKey = JWT_KEY_PREFIX + userId+ ":" + jwt;
+        return redisTemplate.hasKey(jwtKey);
     }
 }

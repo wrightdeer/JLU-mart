@@ -10,6 +10,7 @@ import com.jlumart.result.Result;
 import com.jlumart.service.EmployeeService;
 import com.jlumart.vo.EmployeeInfoVO;
 import com.jlumart.vo.EmployeeLoginVO;
+import com.jlumart.vo.EmployeeVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 员工管理
  */
-@RestController
+@RestController("adminEmployeeController")
 @RequestMapping("/admin/employee")
 @Slf4j
 @Api(tags = "员工相关接口")
@@ -69,9 +70,9 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "id查询员工")
-    public Result<Employee> getById(@PathVariable Long id) {
+    public Result<EmployeeVO> getById(@PathVariable Long id) {
         log.info("根据id查询员工：{}", id);
-        Employee employee = employeeService.getById(id);
+        EmployeeVO employee = employeeService.getById(id);
         return Result.success(employee);
     }
 

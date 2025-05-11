@@ -2,6 +2,7 @@ package com.jlumart.interceptor;
 
 import com.jlumart.constant.JwtClaimsConstant;
 import com.jlumart.context.BaseContext;
+import com.jlumart.interceptor.utils.JwtRedisUtil;
 import com.jlumart.properties.JwtProperties;
 import com.jlumart.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -23,6 +24,8 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtProperties jwtProperties;
+    @Autowired
+    private JwtRedisUtil jwtRedisUtil;
 
     /**
      * 校验jwt
@@ -48,9 +51,26 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
         try {
             log.info("jwt校验:{}", token);
             Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
-            Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
-            log.info("当前用户id：", userId);
-            BaseContext.setCurrentId(userId);
+            Long Id = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
+            log.info("当前用户id：", Id);
+            // 在redis中进行校验
+            String userId = "USER:" + Id;
+            if (!jwtRedisUtil.checkJwtInRedis(userId, token)) {
+                response.setStatus(401);
+                return false;
+            }
+            // 判断拦截到的是不是退出登录接口
+            if (request.getRequestURI().contains("/logout")) {
+                // 如果是退出登录接口，则从redis中删除token
+                jwtRedisUtil.removeJwtFromRedis(userId, token);
+                return true;
+            }
+            // 判断拦截到的是不是修改密码接口
+            if (request.getRequestURI().contains("/editPassword")) {
+                // 如果是修改密码接口，则将jwt存入线程
+                BaseContext.setCurrentJwt(token);
+            }
+            BaseContext.setCurrentId(Id);
             //3、通过，放行
             return true;
         } catch (Exception ex) {

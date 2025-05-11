@@ -36,6 +36,10 @@ public class GlobalExceptionHandler {
         if (ex.getMessage().contains("JLUMARTADMIN.USERNAME_UK")) {
             return Result.error("用户名已存在");
         }
+        // 判断是否违反库存的非负限性约束
+        if (ex.getMessage().contains("JLUMARTADMIN.chk_stock_non_negative")) {
+            return Result.error("库存不能小于0");
+        }
 
         return Result.error(MessageConstant.UNKNOWN_ERROR);
     }
