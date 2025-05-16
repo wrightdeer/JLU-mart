@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         log.error("数据库唯一约束冲突异常：", ex);
 
         // 判断是否是 username 字段的唯一性冲突
-        if (ex.getMessage().contains("JLUMARTADMIN.USERNAME_UK")) {
+        if (ex.getMessage().contains("JLUMARTADMIN.USERNAME_UK") || ex.getMessage().contains("JLUMARTADMIN.USER_USERNAME")) {
             return Result.error("用户名已存在");
         }
         // 判断是否违反库存的非负限性约束

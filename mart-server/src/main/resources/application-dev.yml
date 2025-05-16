@@ -22,4 +22,6 @@ jlumart:
     user-secret-key: your-secret-key
   map:
     address: your-address
+    longitude: your-longitude
+    latitude: your-latitude
     ak: your-ak

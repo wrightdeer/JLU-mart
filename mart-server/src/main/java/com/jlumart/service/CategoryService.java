@@ -6,6 +6,7 @@ import com.jlumart.entity.Category;
 import com.jlumart.result.PageResult;
 import com.jlumart.vo.CategoryByParentVO;
 import com.jlumart.vo.CategoryVO;
+import com.jlumart.vo.CategoryViewVO;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface CategoryService {
     void update(CategoryDTO categoryDTO);
 
     void delete(Long id);
+
+    List<CategoryViewVO> getViewByParentId(Long parentId);
 }

@@ -61,5 +61,7 @@ jlumart:
 
   map:
     address: ${jlumart.map.address}
+    longgitude: ${jlumart.map.longitude}
+    latitude: ${jlumart.map.latitude}
     ak: ${jlumart.map.ak}
     output: json

@@ -1,19 +1,25 @@
 package com.jlumart.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class LoginDTO {
+@AllArgsConstructor
+public class UserRegisterDTO {
     /**
-     * 用户名
+     * 用户昵称
      */
-    private String username;
+    private String name;
     /**
      * 密码
      */
     private String password;
+    /**
+     * 用户名
+     */
+    private String username;
 }

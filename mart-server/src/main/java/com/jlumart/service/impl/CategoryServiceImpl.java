@@ -16,6 +16,7 @@ import com.jlumart.service.CategoryService;
 import com.jlumart.vo.CategoryByParentVO;
 import com.jlumart.vo.CategoryPageVO;
 import com.jlumart.vo.CategoryVO;
+import com.jlumart.vo.CategoryViewVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,5 +95,9 @@ public class CategoryServiceImpl implements CategoryService {
             throw new IllegalOperationException("该分类下有商品，无法删除");
         }
         categoryMapper.delete(id);
+    }
+
+    public List<CategoryViewVO> getViewByParentId(Long parentId) {
+        return categoryMapper.getViewByParentId(parentId);
     }
 }

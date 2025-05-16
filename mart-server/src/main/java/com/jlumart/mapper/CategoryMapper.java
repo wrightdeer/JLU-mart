@@ -6,6 +6,7 @@ import com.jlumart.entity.Category;
 import com.jlumart.vo.CategoryByParentVO;
 import com.jlumart.vo.CategoryPageVO;
 import com.jlumart.vo.CategoryVO;
+import com.jlumart.vo.CategoryViewVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -32,4 +33,7 @@ public interface CategoryMapper {
 
     @Delete("DELETE FROM CATEGORIES WHERE id = #{id}")
     void delete(Long id);
+
+    @Select("SELECT id, name FROM CATEGORIES WHERE parent_id = #{parentId} AND status = 1 ORDER BY sort_weight ")
+    List<CategoryViewVO> getViewByParentId(Long parentId);
 }

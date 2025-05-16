@@ -23,7 +23,7 @@ public class BaiduMapUtil {
     private BaiduMapProperties baiduMapProperties;
 
     public String getShopAddress() {
-        return baiduMapProperties.getAddress();
+        return baiduMapProperties.getLatitude()  + "," + baiduMapProperties.getLongitude();
     }
 
     /**
@@ -59,7 +59,7 @@ public class BaiduMapUtil {
      * @return 距离（米）
      * @throws IOException 如果请求失败
      */
-    public Integer calculateDistance(String origin, String destination) throws IOException {
+    public Long calculateDistance(String origin, String destination) throws IOException {
         Map map = new HashMap();
         map.put("origin", origin);
         map.put("destination", destination);
@@ -70,7 +70,7 @@ public class BaiduMapUtil {
             JSONObject jsonObject = JSON.parseObject(json);
             JSONObject result = jsonObject.getJSONObject("result");
             JSONArray routes = result.getJSONArray("routes");
-            Integer distance = routes.getJSONObject(0).getInteger("distance");
+            Long distance = routes.getJSONObject(0).getLong("distance");
            return distance;
         }
         return null;

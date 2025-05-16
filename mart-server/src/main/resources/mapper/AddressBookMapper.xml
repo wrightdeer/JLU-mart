@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jlumart.mapper.AddressBookMapper">
+    <insert id="insert">
+        INSERT INTO ADDRESS_BOOKS(USER_ID, RECEIVER_NAME, PHONE, SEX, PROVINCE, DISTRICT, CITY, DETAIL_ADDRESS, LABEL, CREATE_TIME, UPDATE_TIME)
+        VALUES (#{userId}, #{receiverName}, #{phone}, #{sex}, #{province}, #{district}, #{city}, #{detailAddress}, #{label}, #{createTime}, #{updateTime})
+    </insert>
+    <update id="update">
+        UPDATE ADDRESS_BOOKS
+        <set>
+            <if test="receiverName != null">RECEIVER_NAME = #{receiverName},</if>
+            <if test="phone != null">PHONE = #{phone},</if>
+            <if test="sex != null">SEX = #{sex},</if>
+            <if test="province != null">PROVINCE = #{province},</if>
+            <if test="district != null">DISTRICT = #{district},</if>
+            <if test="city != null">CITY = #{city},</if>
+            <if test="detailAddress != null">DETAIL_ADDRESS = #{detailAddress},</if>
+            <if test="label != null">LABEL = #{label},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime},</if>
+            <if test="latitude != null">LATITUDE = #{latitude},</if>
+            <if test="longitude != null">LONGITUDE = #{longitude},</if>
+        </set>
+        WHERE ID = #{id}
+        AND USER_ID = #{userId}
+    </update>
+    <select id="getLatestUpdatedAddress" resultType="com.jlumart.vo.AddressBookVO">
+        SELECT
+            ID,
+            RECEIVER_NAME,
+            PHONE,
+            SEX,
+            PROVINCE,
+            DISTRICT,
+            CITY,
+            DETAIL_ADDRESS,
+            LABEL
+        FROM ADDRESS_BOOKS
+        WHERE USER_ID = #{userId}
+          AND UPDATE_TIME = (
+            SELECT MAX(UPDATE_TIME)
+            FROM ADDRESS_BOOKS
+            WHERE USER_ID = #{userId}
+        )
+          AND ROWNUM = 1
+
+    </select>
+</mapper>

@@ -1,19 +1,21 @@
-package com.jlumart.dto;
+package com.jlumart.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDTO {
+@Builder
+public class CategoryViewVO {
     /**
-     * 用户名
+     * 分类id
      */
-    private String username;
+    private Long id;
     /**
-     * 密码
+     * 分类名称
      */
-    private String password;
+    private String name;
 }
