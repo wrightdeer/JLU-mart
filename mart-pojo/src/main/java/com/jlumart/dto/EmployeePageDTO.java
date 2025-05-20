@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 员工分页参数
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

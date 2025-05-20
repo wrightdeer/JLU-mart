@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 修改用户
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

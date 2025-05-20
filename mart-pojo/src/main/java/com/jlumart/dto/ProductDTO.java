@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 新增/修改商品
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

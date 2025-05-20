@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 用户端显示的分类
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

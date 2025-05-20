@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jlumart.mapper.FavoriteMapper">
+    <insert id="insert" parameterType="map">
+        INSERT INTO FAVORITES (USER_ID,
+                               PRODUCTS_ID,
+                               PRODUCTS_NAME,
+                               PRODUCTS_IMAGE,
+                               PRODUCTS_PRICE,
+                               CREATE_TIME,
+                               UPDATE_TIME)
+        SELECT #{userId},
+               #{productsId},
+               CASE
+                   WHEN p.NAME IS NULL OR p.STATUS = 0 THEN '商品已下架'
+                   ELSE p.NAME
+                   END,
+               CASE
+                   WHEN p.IMAGE IS NULL OR p.STATUS = 0 THEN 'default_image.png'
+                   ELSE p.IMAGE
+                   END,
+               CASE
+                   WHEN p.PRICE IS NULL OR p.STATUS = 0 THEN 0
+                   ELSE p.PRICE
+                   END,
+               #{createTime,jdbcType=DATE},
+               #{updateTime,jdbcType=DATE}
+        FROM DUAL
+                 LEFT JOIN PRODUCTS p ON p.ID = #{productsId}
+    </insert>
+
+    <update id="update">
+        update favorites
+        <set>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="productsName != null">
+                products_name = #{productsName},
+            </if>
+            <if test="productsImage != null">
+                products_image = #{productsImage},
+            </if>
+            <if test="productsPrice != null">
+                products_price = #{productsPrice},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

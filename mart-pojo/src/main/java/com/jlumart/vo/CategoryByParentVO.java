@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 根据父分类id查询子分类
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

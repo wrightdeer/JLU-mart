@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jlumart.mapper.ShoppingCartMapper">
+
+    <insert id="insert" parameterType="map">
+        INSERT INTO SHOPPING_CARTS (USER_ID,
+                                    PRODUCTS_ID,
+                                    QUANTITY,
+                                    PRODUCTS_NAME,
+                                    PRODUCTS_IMAGE,
+                                    PRODUCTS_PRICE,
+                                    CREATE_TIME,
+                                    UPDATE_TIME)
+        SELECT #{userId},
+               #{productsId},
+               #{quantity},
+               CASE
+                   WHEN p.NAME IS NULL OR p.STATUS = 0 THEN '商品已下架'
+                   ELSE p.NAME
+                   END,
+               CASE
+                   WHEN p.IMAGE IS NULL OR p.STATUS = 0 THEN 'default_image.png'
+                   ELSE p.IMAGE
+                   END,
+               CASE
+                   WHEN p.PRICE IS NULL OR p.STATUS = 0 THEN 0
+                   ELSE p.PRICE
+                   END,
+               #{createTime,jdbcType=DATE},
+               #{updateTime,jdbcType=DATE}
+        FROM DUAL
+                 LEFT JOIN PRODUCTS p ON p.ID = #{productsId}
+    </insert>
+    <update id="update">
+        update SHOPPING_CARTS
+        <set>
+            <if test="quantity != null">
+                quantity = #{quantity},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="productsName != null">
+                products_name = #{productsName},
+            </if>
+            <if test="productsImage != null">
+                products_image = #{productsImage},
+            </if>
+            <if test="productsPrice != null">
+                products_price = #{productsPrice},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from SHOPPING_CARTS
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+          and user_id = #{userId}
+    </delete>
+    <select id="getByIds" resultType="com.jlumart.vo.ShoppingCartVO">
+        select id,
+               quantity,
+               products_id,
+               products_name,
+               products_image,
+               products_price,
+               update_time
+        from SHOPPING_CARTS
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+          and user_id = #{userId}
+    </select>
+
+</mapper>

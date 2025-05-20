@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jlumart.mapper.ProductMapper">
-<!--    库存值为增量-->
+    <!--    库存值为增量-->
     <update id="update">
         update products
         <set>
@@ -36,21 +36,21 @@
         where id = #{id}
     </update>
 
-    <select id="page" resultType="com.jlumart.vo.ProductPageVO" >
+    <select id="page" resultType="com.jlumart.vo.ProductPageVO">
         select
-            p.id,
-            p.name,
-            p.image,
-            p.price,
-            p.stock,
-            p.update_time,
-            p.status,
-            c.name as category_name,
-            pc.name as parent_category_name
-            from
-                products p
-                left join categories c on p.category_id = c.id
-                left join categories pc on c.parent_id = pc.id
+        p.id,
+        p.name,
+        p.image,
+        p.price,
+        p.stock,
+        p.update_time,
+        p.status,
+        c.name as category_name,
+        pc.name as parent_category_name
+        from
+        products p
+        left join categories c on p.category_id = c.id
+        left join categories pc on c.parent_id = pc.id
         <where>
             <if test="name != null and name != ''">
                 and p.name like '%' || #{name} || '%'
@@ -65,15 +65,42 @@
         order by create_time desc
     </select>
     <select id="getById" resultType="com.jlumart.vo.ProductVO">
-        select
-            p.name as name,
-            p.description as description,
-            p.image as image,
-            p.price as price,
-            c.id as categoryId,
-            c.parent_id as parentCategoryId
+        select p.name        as name,
+               p.description as description,
+               p.image       as image,
+               p.price       as price,
+               c.id          as category_id,
+               c.parent_id   as parent_category_id
         from products p
-        left join categories c on p.category_id = c.id
+                 left join categories c on p.category_id = c.id
+        where p.id = #{id}
+    </select>
+    <select id="viewPage" resultType="com.jlumart.vo.ProductPageVO">
+        select id, name, image, price, stock
+        from products
+        <where>
+            category_id = #{categoryId}
+            and status = 1
+            <if test="name != null and name != ''">
+                and name like '%' || #{name} || '%'
+            </if>
+        </where>
+    </select>
+    <select id="getViewById" resultType="com.jlumart.vo.ProductViewVO">
+        select p.name        as name,
+               p.image       as image,
+               p.price       as price,
+               p.stock       as stock,
+               p.description as description,
+               c.name        as category_name,
+               pc.name       as parent_category_name,
+               case when sc.products_id is not null then sc.quantity else 0 end as cart_quantity,
+               case when f.products_id is not null then 1 else 0 end as is_favorite
+        from products p
+                 left join categories c on p.category_id = c.id
+                 left join categories pc on c.parent_id = pc.id
+                 left join shopping_carts sc on p.id = sc.products_id and sc.user_id = #{userId}
+                left join favorites f on p.id = f.products_id and f.user_id = #{userId}
         where p.id = #{id}
     </select>
 </mapper>

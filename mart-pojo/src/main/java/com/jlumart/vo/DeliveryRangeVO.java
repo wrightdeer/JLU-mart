@@ -6,8 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
+/**
+ * 配送范围信息
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +32,10 @@ public class DeliveryRangeVO {
      */
     private Integer isInRange;
     public DeliveryRangeVO(Long distance) {
+        if (distance == null) {
+            this.isInRange = 0;
+            return;
+        }
         this.distance = distance;
         this.isInRange = distance <= 20000 ? 1 : 0;
 

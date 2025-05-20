@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * id查询地址簿
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -5,6 +5,7 @@ import com.jlumart.dto.ProductPageDTO;
 import com.jlumart.entity.Product;
 import com.jlumart.vo.ProductPageVO;
 import com.jlumart.vo.ProductVO;
+import com.jlumart.vo.ProductViewVO;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -30,4 +31,8 @@ public interface ProductMapper {
 
     @Select("SELECT COUNT(*) FROM PRODUCTS WHERE CATEGORY_ID = #{id}")
     Long getCountByCategoryId(Long id);
+
+    Page<ProductPageVO> viewPage(ProductPageDTO productPageDTO);
+
+    ProductViewVO getViewById(Long id, Long userId);
 }

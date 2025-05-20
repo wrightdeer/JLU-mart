@@ -2,7 +2,6 @@ package com.jlumart.controller.admin;
 
 import com.jlumart.dto.CategoryDTO;
 import com.jlumart.dto.CategoryPageDTO;
-import com.jlumart.entity.Category;
 import com.jlumart.result.PageResult;
 import com.jlumart.result.Result;
 import com.jlumart.service.CategoryService;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController("adminCategoryController")

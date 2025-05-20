@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 员工分页查询结果
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

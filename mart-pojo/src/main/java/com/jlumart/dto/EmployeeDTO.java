@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 
+/**
+ * 新增/修改员工信息
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

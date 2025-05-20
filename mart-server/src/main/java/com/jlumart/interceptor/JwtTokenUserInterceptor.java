@@ -8,12 +8,14 @@ import com.jlumart.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 
 /**
  * jwt令牌校验的拦截器
@@ -26,6 +28,10 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
     private JwtProperties jwtProperties;
     @Autowired
     private JwtRedisUtil jwtRedisUtil;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    private static final String REQUEST_COUNT_PREFIX = "USER:REQUEST:COUNT:";
+    private static final String REQUEST_TIME_PREFIX = "USER:REQUEST:TIME:";
 
     /**
      * 校验jwt
@@ -71,6 +77,13 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
                 BaseContext.setCurrentJwt(token);
             }
             BaseContext.setCurrentId(Id);
+
+            // 缓存统计信息
+            LocalDateTime now = LocalDateTime.now();
+            redisTemplate.opsForValue().increment(REQUEST_COUNT_PREFIX + Id);
+
+            redisTemplate.opsForValue().set(REQUEST_TIME_PREFIX + Id, now);
+
             //3、通过，放行
             return true;
         } catch (Exception ex) {

@@ -12,7 +12,7 @@
         <if test="password != null">password = #{password},</if>
         <if test="sex != null">sex = #{sex},</if>
         <if test="avatar != null">avatar = #{avatar},</if>
-        <if test="balance != null">balance = #{balance},</if>
+        <if test="balance != null">balance = balance + #{balance},</if>
         <if test="phone != null">phone = #{phone},</if>
         <if test="email != null">email = #{email},</if>
         <if test="createTime != null">create_time = #{createTime},</if>

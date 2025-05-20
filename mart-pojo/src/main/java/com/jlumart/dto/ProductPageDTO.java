@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 商品分页参数
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

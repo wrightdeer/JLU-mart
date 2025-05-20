@@ -4,6 +4,7 @@ import com.jlumart.dto.ProductDTO;
 import com.jlumart.dto.ProductPageDTO;
 import com.jlumart.result.PageResult;
 import com.jlumart.vo.ProductVO;
+import com.jlumart.vo.ProductViewVO;
 
 public interface ProductService {
     PageResult page(ProductPageDTO productPageDTO);
@@ -19,4 +20,8 @@ public interface ProductService {
     void delete(Long id);
 
     void updateStock(Long id, Long stock);
+
+    PageResult viewPage(ProductPageDTO productPageDTO);
+
+    ProductViewVO getViewById(Long id);
 }

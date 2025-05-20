@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 通用登录参数
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

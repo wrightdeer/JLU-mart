@@ -2,8 +2,6 @@ package com.jlumart.controller.user;
 
 import com.jlumart.result.Result;
 import com.jlumart.service.CategoryService;
-import com.jlumart.vo.CategoryByParentVO;
-import com.jlumart.vo.CategoryVO;
 import com.jlumart.vo.CategoryViewVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

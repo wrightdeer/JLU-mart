@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * id查询员工信息
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

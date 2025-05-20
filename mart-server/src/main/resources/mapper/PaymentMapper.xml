@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jlumart.mapper.PaymentMapper">
+    <insert id="insert">
+        insert into payment_orders(order_id,user_id,amount,create_time) values(#{orderId},#{userId},#{amount},#{createTime})
+    </insert>
+    <update id="update">
+        update payment_orders
+        <set>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId}
+            </if>
+        </where>
+    </update>
+    <select id="page" resultType="com.jlumart.vo.PaymentPageVO">
+         select * from payment_orders
+          <where>
+              <if test="status != null">
+                  status = #{status}
+              </if>
+              <if test="orderId != null and orderId != ''">
+                  and order_id = #{orderId}
+              </if>
+              <if test="userId != null">
+                  and user_id = #{userId}
+              </if>
+          </where>
+    </select>
+</mapper>
