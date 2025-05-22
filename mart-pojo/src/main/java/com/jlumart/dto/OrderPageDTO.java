@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 充值订单分页参数
+ * 充值/购物订单分页参数
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PaymentPageDTO {
+public class OrderPageDTO {
     /**
      * 充值订单号
      */

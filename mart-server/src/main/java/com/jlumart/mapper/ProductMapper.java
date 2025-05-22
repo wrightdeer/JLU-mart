@@ -3,6 +3,7 @@ package com.jlumart.mapper;
 import com.github.pagehelper.Page;
 import com.jlumart.dto.ProductPageDTO;
 import com.jlumart.entity.Product;
+import com.jlumart.entity.ProductItem;
 import com.jlumart.vo.ProductPageVO;
 import com.jlumart.vo.ProductVO;
 import com.jlumart.vo.ProductViewVO;
@@ -35,4 +36,5 @@ public interface ProductMapper {
     Page<ProductPageVO> viewPage(ProductPageDTO productPageDTO);
 
     ProductViewVO getViewById(Long id, Long userId);
+
 }

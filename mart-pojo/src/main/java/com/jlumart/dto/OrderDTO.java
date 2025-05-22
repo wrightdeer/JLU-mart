@@ -22,7 +22,7 @@ public class OrderDTO {
     /**
      * 购物车id列表，仅orderType为1时需要
      */
-    private List<Long> cartIdList;
+    private List<Long> shoppingCartIds;
     /**
      * 订单类型，0 商品*数量 1 购物车
      */

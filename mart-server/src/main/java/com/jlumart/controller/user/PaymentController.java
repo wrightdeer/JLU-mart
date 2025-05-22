@@ -2,7 +2,7 @@ package com.jlumart.controller.user;
 
 import com.jlumart.dto.AmountDTO;
 import com.jlumart.dto.PaymentDTO;
-import com.jlumart.dto.PaymentPageDTO;
+import com.jlumart.dto.OrderPageDTO;
 import com.jlumart.result.PageResult;
 import com.jlumart.result.Result;
 import com.jlumart.service.PaymentService;
@@ -39,9 +39,9 @@ public class PaymentController {
 
     @GetMapping("/page")
     @ApiOperation(value = "充值记录分页")
-    public Result<PageResult> page(PaymentPageDTO paymentPageDTO) {
-        log.info("充值记录分页,参数:{}", paymentPageDTO);
-        PageResult pageResult = paymentService.page(paymentPageDTO);
+    public Result<PageResult> page(OrderPageDTO orderPageDTO) {
+        log.info("充值记录分页,参数:{}", orderPageDTO);
+        PageResult pageResult = paymentService.page(orderPageDTO);
         return Result.success(pageResult);
     }
 }

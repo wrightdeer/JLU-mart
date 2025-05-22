@@ -1,7 +1,7 @@
 package com.jlumart.mapper;
 
 import com.github.pagehelper.Page;
-import com.jlumart.dto.PaymentPageDTO;
+import com.jlumart.dto.OrderPageDTO;
 import com.jlumart.entity.PaymentOrder;
 import com.jlumart.vo.PaymentPageVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,5 +21,5 @@ public interface PaymentMapper {
     @Select("select * from payment_orders where STATUS = 0")
     Set<PaymentOrder> getAllToBePay();
 
-    Page<PaymentPageVO> page(PaymentPageDTO paymentPageDTO);
+    Page<PaymentPageVO> page(OrderPageDTO orderPageDTO);
 }

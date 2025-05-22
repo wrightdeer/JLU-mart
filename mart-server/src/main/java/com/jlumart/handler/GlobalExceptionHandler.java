@@ -40,6 +40,9 @@ public class GlobalExceptionHandler {
         if (ex.getMessage().contains("JLUMARTADMIN.chk_stock_non_negative")) {
             return Result.error("库存不能小于0");
         }
+        if (ex.getMessage().contains("JLUMARTADMIN.CHK_BALANCE_NON_NEGATIVE")) {
+            return Result.error("余额不足");
+        }
         // 判断是否违反收藏夹中商品唯一性约束
         if (ex.getMessage().contains("JLUMARTADMIN.FAVORITES_UK")) {
             return Result.error("商品已在收藏夹中，请勿重复操作");

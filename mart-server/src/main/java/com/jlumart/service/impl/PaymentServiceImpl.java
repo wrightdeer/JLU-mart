@@ -4,7 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.jlumart.context.BaseContext;
 import com.jlumart.dto.PaymentDTO;
-import com.jlumart.dto.PaymentPageDTO;
+import com.jlumart.dto.OrderPageDTO;
 import com.jlumart.entity.PaymentOrder;
 import com.jlumart.entity.User;
 import com.jlumart.exception.IllegalOperationException;
@@ -63,11 +63,11 @@ public class PaymentServiceImpl implements PaymentService {
         paymentMapper.update(paymentOrder);
     }
 
-    public PageResult page(PaymentPageDTO paymentPageDTO) {
+    public PageResult page(OrderPageDTO orderPageDTO) {
         Long userId = BaseContext.getCurrentId();
-        paymentPageDTO.setUserId(userId);
-        PageHelper.startPage(paymentPageDTO.getPage(), paymentPageDTO.getPageSize());
-        Page<PaymentPageVO> page = paymentMapper.page(paymentPageDTO);
+        orderPageDTO.setUserId(userId);
+        PageHelper.startPage(orderPageDTO.getPage(), orderPageDTO.getPageSize());
+        Page<PaymentPageVO> page = paymentMapper.page(orderPageDTO);
         return new PageResult(page.getTotal(), page.getResult());
     }
 }

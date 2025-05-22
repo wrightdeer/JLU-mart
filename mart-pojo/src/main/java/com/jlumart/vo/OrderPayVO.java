@@ -1,8 +1,17 @@
 package com.jlumart.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 订单创建
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderPayVO {
     /**
      * 配送费
