@@ -45,7 +45,7 @@ public class OrderController {
     @ApiOperation(value = "分页查询订单")
     public Result<PageResult> page(OrderPageDTO orderPageDTO) {
         log.info("分页查询订单，分页参数：{}", orderPageDTO);
-        PageResult pageResult = orderService.page(orderPageDTO);
+        PageResult pageResult = orderService.pageView(orderPageDTO);
         return Result.success(pageResult);
     }
 
@@ -53,7 +53,8 @@ public class OrderController {
     @ApiOperation(value = "订单数量统计")
     public Result<OrderStatisticVO> statistics() {
         log.info("订单数量统计");
-        OrderStatisticVO orderStatisticVO = orderService.statistics();
+        Long  userId = BaseContext.getCurrentId();
+        OrderStatisticVO orderStatisticVO = orderService.statistics(userId);
         return Result.success(orderStatisticVO);
     }
 

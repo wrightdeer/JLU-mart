@@ -52,6 +52,12 @@ jlumart:
     user-ttl: 720000000
     # 设置前端传递过来的令牌名称
     user-token-name: Authorization
+    # 设置jwt签名加密时使用的秘钥
+    courier-secret-key: ${jlumart.jwt.courier-secret-key}
+    # 设置jwt过期时间
+    courier-ttl: 720000000
+    # 设置前端传递过来的令牌名称
+    courier-token-name: Authorization
 
   alioss:
     endpoint: ${jlumart.alioss.endpoint}

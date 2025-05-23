@@ -44,7 +44,7 @@
         </where>
     </update>
     <select id="page" resultType="com.jlumart.entity.ShoppingOrder">
-        SELECT ID, ORDER_ID, TOTAL_AMOUNT, CREATE_TIME, STATUS, ITEMS
+        SELECT *
         FROM SHOPPING_ORDERS
         <where>
             <if test="orderId != null and orderId != ''">
@@ -56,6 +56,14 @@
             <if test="status != null">
                 AND STATUS = #{status}
             </if>
+            <if test="courierId != null">
+                AND COURIER_ID = #{courierId}
+            </if>
+            <if test="date != null">
+                AND CREATE_TIME BETWEEN
+                #{date}
+                AND #{date} + 1
+            </if>
         </where>
         ORDER BY CREATE_TIME DESC
     </select>
@@ -64,6 +72,16 @@
         FROM SHOPPING_ORDERS
         <where>
                 STATUS = #{status}
+            <if test="userId != null">
+                AND USER_ID = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="getByOrderId" resultType="com.jlumart.entity.ShoppingOrder">
+        SELECT *
+        FROM SHOPPING_ORDERS
+        <where>
+            ORDER_ID = #{orderId}
             <if test="userId != null">
                 AND USER_ID = #{userId}
             </if>

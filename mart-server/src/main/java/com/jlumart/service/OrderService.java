@@ -5,20 +5,30 @@ import com.jlumart.dto.OrderDTO;
 import com.jlumart.dto.OrderPageDTO;
 import com.jlumart.dto.OrderPayDTO;
 import com.jlumart.result.PageResult;
-import com.jlumart.vo.OrderPayVO;
-import com.jlumart.vo.OrderStatisticVO;
-import com.jlumart.vo.OrderViewVO;
+import com.jlumart.vo.*;
 
 public interface OrderService {
     OrderPayVO createOrder(OrderDTO orderDTO);
 
     void confirmPayment(OrderPayDTO orderPayDTO);
 
-    PageResult page(OrderPageDTO orderPageDTO);
+    PageResult pageView(OrderPageDTO orderPageDTO);
 
-    OrderStatisticVO statistics();
+    OrderStatisticVO statistics(Long userId);
 
     OrderViewVO getViewByOrderId(String orderId);
 
     void cancel(OrderCancelDTO orderCancelDTO);
+
+    PageResult page(OrderPageDTO orderPageDTO);
+
+    OrderVO getByOrderId(String orderId);
+
+    PageResult pageCourier(OrderPageDTO orderPageDTO);
+
+    void accept(Long id);
+
+    void complete(Long id);
+
+    OrderAddressVO getAddress(Long id);
 }

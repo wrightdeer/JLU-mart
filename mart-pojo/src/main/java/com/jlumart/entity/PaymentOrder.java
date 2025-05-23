@@ -12,10 +12,28 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentOrder {
+    /**
+     * 订单id
+     */
     private Long id;
+    /**
+     * 订单号
+     */
     private String orderId;
+    /**
+     * 用户id
+     */
     private Long  userId;
+    /**
+     * 金额
+     */
     private Double amount;
+    /**
+     * 订单状态
+     */
     private Integer status;
+    /**
+     * 更新时间
+     */
     private LocalDateTime createTime;
 }

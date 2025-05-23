@@ -1,6 +1,7 @@
 package com.jlumart.config;
 
 import com.jlumart.interceptor.JwtTokenAdminInterceptor;
+import com.jlumart.interceptor.JwtTokenCourierInterceptor;
 import com.jlumart.interceptor.JwtTokenUserInterceptor;
 import com.jlumart.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
     @Autowired
     private JwtTokenUserInterceptor jwtTokenUserInterceptor;
+    @Autowired
+    private JwtTokenCourierInterceptor jwtTokenCourierInterceptor;
 
     /**
      * 注册自定义拦截器
@@ -48,6 +51,10 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/login")
                 .excludePathPatterns("/user/user/register");
+
+        registry.addInterceptor(jwtTokenCourierInterceptor)
+                .addPathPatterns("/courier/**")
+                .excludePathPatterns("/courier/courier/login");
     }
 
     /**
@@ -88,6 +95,28 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.jlumart.controller.user"))
+                .paths(PathSelectors.any())
+                .build();
+        return docket;
+    }
+
+    /**
+     * 通过knife4j生成接口文档
+     * @return
+     */
+    @Bean
+    public Docket docket3() {
+        log.info("准备生成接口文档...");
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("吉大超市项目接口文档")
+                .version("2.0")
+                .description("吉大超市项目接口文档")
+                .build();
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .groupName("配送端接口")
+                .apiInfo(apiInfo)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.jlumart.controller.courier"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;

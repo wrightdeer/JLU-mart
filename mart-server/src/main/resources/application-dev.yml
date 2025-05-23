@@ -20,6 +20,7 @@ jlumart:
   jwt:
     admin-secret-key: your-secret-key
     user-secret-key: your-secret-key
+    courier-secret-key: your-secret-key
   map:
     address: your-address
     longitude: your-longitude

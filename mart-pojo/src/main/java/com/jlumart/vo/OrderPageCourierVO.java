@@ -10,23 +10,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 用户订单详情
+ * 配送端订单分页
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderViewVO {
-    /**
-     * 取消原因
-     */
-    private String cancelReason;
+public class OrderPageCourierVO {
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
     /**
-     * 距离
+     * 配送距离，单位：米
      */
     private Long deliveryDistance;
     /**
@@ -34,19 +30,11 @@ public class OrderViewVO {
      */
     private Double deliveryFee;
     /**
-     * 送达时间
-     */
-    private LocalDateTime deliveryTime;
-    /**
-     * 预计送达时间
-     */
-    private LocalDateTime estimatedDeliveryTime;
-    /**
      * 订单id
      */
     private Long id;
     /**
-     * 商品列表
+     * 商品详情
      */
     private List<ProductItem> items;
     /**
@@ -54,31 +42,7 @@ public class OrderViewVO {
      */
     private String orderId;
     /**
-     * 详细收货地址
-     */
-    private String receiverAddress;
-    /**
-     * 收货人姓名
-     */
-    private String receiverName;
-    /**
-     * 收货人电话
-     */
-    private String receiverPhone;
-    /**
-     * 收货人性别，1 男 2 女
-     */
-    private Integer receiverSex;
-    /**
-     * 备注
-     */
-    private String remark;
-    /**
      * 状态，0 未支付 1 待配送 2 配送中 3 已完成 4 已取消
      */
     private Integer status;
-    /**
-     * 总额
-     */
-    private Double totalAmount;
 }

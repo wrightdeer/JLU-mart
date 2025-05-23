@@ -6,25 +6,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 员工信息
+ * 配送员信息
  */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeInfoVO {
+@Builder
+public class CourierVO {
     /**
      * 头像url
      */
     private String avatar;
     /**
-     * id
+     * 邮箱
      */
-    private Long id;
+    private String email;
     /**
      * 昵称
      */
     private String name;
+    /**
+     * 电话号码
+     */
+    private String phone;
+    /**
+     * 性别
+     */
+    private Integer sex;
     /**
      * 用户名
      */

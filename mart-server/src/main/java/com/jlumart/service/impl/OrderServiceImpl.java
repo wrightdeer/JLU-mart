@@ -28,6 +28,7 @@ import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+    public static final double INCOME_RATE = 0.8;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -42,6 +43,8 @@ public class OrderServiceImpl implements OrderService {
     private ObjectMapper objectMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CourierMapper courierMapper;
 
     @Transactional
     public OrderPayVO createOrder(OrderDTO orderDTO) {
@@ -186,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(shoppingOrder);
     }
 
-    public PageResult page(OrderPageDTO orderPageDTO) {
+    public PageResult pageView(OrderPageDTO orderPageDTO) {
         Long userId = BaseContext.getCurrentId();
         orderPageDTO.setUserId(userId);
         PageHelper.startPage(orderPageDTO.getPage(), orderPageDTO.getPageSize());
@@ -195,13 +198,8 @@ public class OrderServiceImpl implements OrderService {
             List<ShoppingOrder> shoppingOrders = page.getResult();
             List<OrderPageViewVO> orderPageViewVOList = new ArrayList<>();
             for (ShoppingOrder shoppingOrder : shoppingOrders) {
-                OrderPageViewVO orderPageViewVO = OrderPageViewVO.builder()
-                        .id(shoppingOrder.getId())
-                        .orderId(shoppingOrder.getOrderId())
-                        .status(shoppingOrder.getStatus())
-                        .totalAmount(shoppingOrder.getTotalAmount())
-                        .createTime(shoppingOrder.getCreateTime().toString())
-                        .build();
+                OrderPageViewVO orderPageViewVO = new OrderPageViewVO();
+                BeanUtils.copyProperties(shoppingOrder, orderPageViewVO);
                 List<ProductItem> productItemList;
                 try {
                     productItemList = objectMapper.readValue(shoppingOrder.getItems(), new TypeReference<List<ProductItem>>() {
@@ -217,19 +215,15 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    public OrderStatisticVO statistics() {
-        Long userId = BaseContext.getCurrentId();
-        if (userId != null) {
-            Long toBePay = orderMapper.countByStatus(ShoppingOrderStatusConstant.TO_BE_PAY, userId);
-            Long toBeDelivery = orderMapper.countByStatus(ShoppingOrderStatusConstant.TO_BE_DELIVERY, userId);
-            Long deliveryInProgress = orderMapper.countByStatus(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS, userId);
-            return OrderStatisticVO.builder()
-                    .toBePay(toBePay)
-                    .toBeDelivery(toBeDelivery)
-                    .deliveryInProgress(deliveryInProgress)
-                    .build();
-        }
-        return null;
+    public OrderStatisticVO statistics(Long userId) {
+        Long toBePay = orderMapper.countByStatus(ShoppingOrderStatusConstant.TO_BE_PAY, userId);
+        Long toBeDelivery = orderMapper.countByStatus(ShoppingOrderStatusConstant.TO_BE_DELIVERY, userId);
+        Long deliveryInProgress = orderMapper.countByStatus(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS, userId);
+        return OrderStatisticVO.builder()
+                .toBePay(toBePay)
+                .toBeDelivery(toBeDelivery)
+                .deliveryInProgress(deliveryInProgress)
+                .build();
     }
 
     public OrderViewVO getViewByOrderId(String orderId) {
@@ -263,44 +257,164 @@ public class OrderServiceImpl implements OrderService {
                 throw new IllegalOperationException("订单不属于当前用户");
             }
         }
-        if (shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_PAY)) {
-            // 未支付订单取消，直接取消即可
-            shoppingOrder.setStatus(ShoppingOrderStatusConstant.CANCELLED);
-            shoppingOrder.setCancelReason(orderCancelDTO.getReason());
-            orderMapper.update(shoppingOrder);
-        } else if (shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_DELIVERY)) {
+        if (shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_DELIVERY)) {
             // 待发货订单取消，需要退款并还原库存
             User user = User.builder()
                     .id(shoppingOrder.getUserId())
                     .balance(shoppingOrder.getTotalAmount())
                     .build();
             userMapper.update(user);
-            List<ProductItem> productItemList;
-            try {
-                productItemList = objectMapper.readValue(shoppingOrder.getItems(), new TypeReference<List<ProductItem>>() {
-                });
-            } catch (JsonProcessingException e) {
-                throw new IllegalOperationException("商品信息错误");
-            }
-            for (ProductItem productItem : productItemList) {
-                Product product = Product.builder()
-                        .id(productItem.getId())
-                        .stock(productItem.getQuantity())
-                        .build();
-                productMapper.update(product);
-            }
-            shoppingOrder.setStatus(ShoppingOrderStatusConstant.CANCELLED);
-            shoppingOrder.setCancelReason(orderCancelDTO.getReason());
-            orderMapper.update(shoppingOrder);
-        } else {
+
+        } else if (!shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_PAY)) {
             throw new IllegalOperationException(
                     "订单状态为"
-                            +(shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS) ?
-                                    "配送中" :
-                                    shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_COMPLETED) ?
-                                            "已完成" :
-                                            "已取消")
+                            + (shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS) ?
+                            "配送中" :
+                            shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_COMPLETED) ?
+                                    "已完成" :
+                                    "已取消")
                             + "，不能取消");
         }
+        List<ProductItem> productItemList;
+        try {
+            productItemList = objectMapper.readValue(shoppingOrder.getItems(), new TypeReference<List<ProductItem>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new IllegalOperationException("商品信息错误");
+        }
+        for (ProductItem productItem : productItemList) {
+            Product product = Product.builder()
+                    .id(productItem.getId())
+                    .stock(productItem.getQuantity())
+                    .build();
+            productMapper.update(product);
+        }
+        shoppingOrder.setStatus(ShoppingOrderStatusConstant.CANCELLED);
+        shoppingOrder.setCancelReason(orderCancelDTO.getReason());
+        orderMapper.update(shoppingOrder);
+    }
+
+    public PageResult page(OrderPageDTO orderPageDTO) {
+        PageHelper.startPage(orderPageDTO.getPage(), orderPageDTO.getPageSize());
+        Page<ShoppingOrder> page = orderMapper.page(orderPageDTO);
+        if (page != null) {
+            List<OrderPageVO> orderPageVOList = new ArrayList<>();
+            List<ShoppingOrder> shoppingOrderList = page.getResult();
+            for (ShoppingOrder shoppingOrder : shoppingOrderList) {
+                OrderPageVO orderPageVO = new OrderPageVO();
+                BeanUtils.copyProperties(shoppingOrder, orderPageVO);
+                orderPageVO.setUsername(userMapper.getById(shoppingOrder.getUserId()).getUsername());
+                try {
+                    orderPageVO.setItems(objectMapper.readValue(shoppingOrder.getItems(), new TypeReference<List<ProductItem>>() {
+                    }));
+                } catch (JsonProcessingException e) {
+                    throw new IllegalOperationException("订单商品信息解析失败");
+                }
+                orderPageVOList.add(orderPageVO);
+            }
+            return new PageResult(page.getTotal(), orderPageVOList);
+        }
+        return null;
+    }
+
+    public OrderVO getByOrderId(String orderId) {
+        ShoppingOrder shoppingOrder = orderMapper.getByOrderId(orderId, null);
+        if (shoppingOrder != null) {
+            OrderVO orderVO = new OrderVO();
+            BeanUtils.copyProperties(shoppingOrder, orderVO);
+            orderVO.setUsername(userMapper.getById(shoppingOrder.getUserId()).getUsername());
+            orderVO.setCourierName(courierMapper.getById(shoppingOrder.getCourierId()).getUsername());
+            orderVO.setReceiverSex(shoppingOrder.getReceiverGender());
+            try {
+                orderVO.setItems(objectMapper.readValue(shoppingOrder.getItems(), new TypeReference<List<ProductItem>>() {
+                }));
+            } catch (JsonProcessingException e) {
+                throw new IllegalOperationException("订单商品信息解析失败");
+            }
+            return orderVO;
+        }
+        return null;
+    }
+
+    public PageResult pageCourier(OrderPageDTO orderPageDTO) {
+        if (orderPageDTO.getStatus() == null) {
+            orderPageDTO.setStatus(ShoppingOrderStatusConstant.TO_BE_DELIVERY);
+        } else if (orderPageDTO.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS) ||
+                orderPageDTO.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_COMPLETED)) {
+            // 配送中与已完成订单，配送员只能查看自己配送的订单
+            orderPageDTO.setCourierId(BaseContext.getCurrentId());
+        } else if (!orderPageDTO.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_DELIVERY)) {
+            throw new IllegalOperationException("没有访问此状态订单的权限");
+        }
+        PageHelper.startPage(orderPageDTO.getPage(), orderPageDTO.getPageSize());
+        Page<ShoppingOrder> page = orderMapper.page(orderPageDTO);
+        if (page != null) {
+            List<OrderPageCourierVO> orderPageCourierVOList = new ArrayList<>();
+            List<ShoppingOrder> shoppingOrderList = page.getResult();
+            for (ShoppingOrder shoppingOrder : shoppingOrderList) {
+                OrderPageCourierVO pageCourierVO = new OrderPageCourierVO();
+                BeanUtils.copyProperties(shoppingOrder, pageCourierVO);
+                try {
+                    pageCourierVO.setItems(objectMapper.readValue(shoppingOrder.getItems(), new TypeReference<List<ProductItem>>() {
+                    }));
+                } catch (JsonProcessingException e) {
+                    throw new IllegalOperationException("订单商品信息解析失败");
+                }
+                orderPageCourierVOList.add(pageCourierVO);
+            }
+            return new PageResult(page.getTotal(), orderPageCourierVOList);
+        }
+        return null;
+    }
+
+    @Transactional
+    public void accept(Long id) {
+        ShoppingOrder shoppingOrder = orderMapper.getById(id);
+        if (shoppingOrder == null) {
+            throw new IllegalOperationException("订单不存在");
+        }
+        if (!shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_DELIVERY)) {
+            throw new IllegalOperationException("订单状态错误");
+        }
+        shoppingOrder.setStatus(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS);
+        shoppingOrder.setCourierId(BaseContext.getCurrentId());
+        shoppingOrder.setUpdateTime(LocalDateTime.now());
+        orderMapper.update(shoppingOrder);
+    }
+
+    @Transactional
+    public void complete(Long id) {
+        ShoppingOrder shoppingOrder = orderMapper.getById(id);
+        if (shoppingOrder == null) {
+            throw new IllegalOperationException("订单不存在");
+        }
+        if (!shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS)) {
+            throw new IllegalOperationException("订单状态错误");
+        }
+        if (!Objects.equals(shoppingOrder.getCourierId(), BaseContext.getCurrentId())) {
+            throw new IllegalOperationException("没有访问此订单的权限");
+        }
+        shoppingOrder.setStatus(ShoppingOrderStatusConstant.DELIVERY_COMPLETED);
+        shoppingOrder.setDeliveryTime(LocalDateTime.now());
+        shoppingOrder.setUpdateTime(LocalDateTime.now());
+        orderMapper.update(shoppingOrder);
+        Courier courier = new Courier();
+        courier.setId(shoppingOrder.getCourierId());
+        // 配送员收入 = 配送费 * 配送收入比例
+        courier.setBalance(shoppingOrder.getDeliveryFee() * INCOME_RATE);
+        courierMapper.update(courier);
+    }
+
+    public OrderAddressVO getAddress(Long id) {
+        ShoppingOrder shoppingOrder = orderMapper.getById(id);
+        if (shoppingOrder != null) {
+            return OrderAddressVO.builder()
+                    .receiverName(shoppingOrder.getReceiverName())
+                    .receiverPhone(shoppingOrder.getReceiverPhone())
+                    .receiverAddress(shoppingOrder.getReceiverAddress())
+                    .receiverSex(shoppingOrder.getReceiverGender())
+                    .build();
+        }
+        return null;
     }
 }

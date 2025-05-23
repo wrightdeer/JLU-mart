@@ -8,19 +8,22 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 /**
- * 用户订单详情
+ * 订单详情
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderViewVO {
+public class OrderVO {
     /**
      * 取消原因
      */
     private String cancelReason;
+    /**
+     * 配送员
+     */
+    private String courierName;
     /**
      * 创建时间
      */
@@ -81,4 +84,13 @@ public class OrderViewVO {
      * 总额
      */
     private Double totalAmount;
+    /**
+     * 用户id
+     */
+    private Long userId;
+    /**
+     * 用户名
+     */
+    private String username;
+
 }

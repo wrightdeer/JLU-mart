@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 员工信息
+ * 配送员信息
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeInfoVO {
+public class CourierInfoVO {
     /**
      * 头像url
      */

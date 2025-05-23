@@ -21,7 +21,6 @@ public interface OrderMapper {
 
     Long countByStatus(Integer status, Long userId);
 
-    @Select("SELECT * FROM SHOPPING_ORDERS WHERE ORDER_ID = #{orderId} AND USER_ID = #{userId}")
     ShoppingOrder getByOrderId(String orderId, Long userId);
 
     @Select("SELECT * FROM SHOPPING_ORDERS WHERE STATUS = 0")
