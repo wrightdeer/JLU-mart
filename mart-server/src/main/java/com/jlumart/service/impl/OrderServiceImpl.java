@@ -91,7 +91,8 @@ public class OrderServiceImpl implements OrderService {
             } catch (JsonProcessingException e) {
                 throw new IllegalOperationException("商品信息错误");
             }
-        } else if (orderDTO.getOrderType() == 1) {
+        } else if (orderDTO.getOrderType() == 1)
+        {
             // 购物车订单
             List<ShoppingCartVO> shoppingCartVOList = shoppingCartMapper.getByIds(userId, orderDTO.getShoppingCartIds());
             if (shoppingCartVOList == null || shoppingCartVOList.isEmpty()) {
@@ -128,7 +129,8 @@ public class OrderServiceImpl implements OrderService {
             } catch (JsonProcessingException e) {
                 throw new IllegalOperationException("商品信息错误");
             }
-        } else {
+        } else
+        {
             throw new IllegalOperationException("订单类型错误");
         }
 
@@ -265,7 +267,8 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             userMapper.update(user);
 
-        } else if (!shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_PAY)) {
+        } else if (!shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.TO_BE_PAY))
+        {
             throw new IllegalOperationException(
                     "订单状态为"
                             + (shoppingOrder.getStatus().equals(ShoppingOrderStatusConstant.DELIVERY_IN_PROGRESS) ?
